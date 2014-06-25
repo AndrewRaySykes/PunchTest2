@@ -1,6 +1,7 @@
 package com.andrewraysykes.punchtest2;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,11 +12,22 @@ public class MainActivity extends Activity {
 
     SharedPreferences mSharedPreferences;
     protected int mCurrentPayPeriodId = 0;
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mSharedPreferences = getSharedPreferences(PunchConstants.PREFS_NAME, MODE_PRIVATE);
+        mSharedPreferences.getInt(PunchConstants.CURRENT_PAY_PERIOD_ID, mCurrentPayPeriodId);
+
+        if (mCurrentPayPeriodId < 1) {
+            Intent intent = new Intent(MainActivity.this, PayPeriodEntryActivity.class);
+            startActivity(intent);
+        } else {
+            // TODO: DB should already be active to pull the current pay period for this activity.
+        }
+
         setContentView(R.layout.activity_main);
     }
 
