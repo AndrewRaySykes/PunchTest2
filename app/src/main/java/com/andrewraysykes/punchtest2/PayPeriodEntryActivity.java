@@ -3,6 +3,7 @@ package com.andrewraysykes.punchtest2;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -31,15 +32,16 @@ public class PayPeriodEntryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_period_entry);
 
-
-//        mDatePicker.init(2014,2,2, new DatePicker.OnDateChangedListener() {
-//            @Override
-//            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//                CalculateDate();
-//            }
-//        });
-
         mDatePicker = (DatePicker) findViewById(R.id.payperiod_datepicker_first_day);
+
+        mDatePicker.init(2014,2,2, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                CalculateDate();
+            }
+        });
+
+
 
         mEditTextDays = (EditText) findViewById(R.id.payperiod_edit_days_in_period);
         mTextPreview = (TextView) findViewById(R.id.payperiod_text_preview_pay_period);
@@ -49,19 +51,23 @@ public class PayPeriodEntryActivity extends Activity {
 
         CalculateDate();
 
-        mTextPreview.setText("Start:" + mPayPeriodStart.format(PunchConstants.FORMAT_DATEONLY_FOR_USER, Locale.ENGLISH) +
-                " End: " + mPayPeriodEnd.format(PunchConstants.FORMAT_DATEONLY_FOR_USER, Locale.ENGLISH));
+
     }
 
     private void CalculateDate() {
         int year = mDatePicker.getYear();
-        int month = mDatePicker.getMonth();
+        int month = mDatePicker.getMonth() + 1;
         int day = mDatePicker.getDayOfMonth();
+
+        Log.i("TEST", "" + year + " " + month + " " + day);
 
         mPayPeriodStart = new DateTime(year, month, day, 0, 0, 0, 0);
 
-        mPayPeriodEnd = mPayPeriodStart.plusDays(Integer.valueOf(mEditTextDays.getText().toString()));
+        mPayPeriodEnd = mPayPeriodStart.plusDays(Integer.valueOf(mEditTextDays.getText().toString()) - 1);
         mPayPeriodEnd = mPayPeriodEnd.getEndOfDay();
+
+        mTextPreview.setText("Start:" + mPayPeriodStart.format(PunchConstants.FORMAT_DATEONLY_FOR_USER, Locale.ENGLISH) +
+                " End: " + mPayPeriodEnd.format(PunchConstants.FORMAT_DATEONLY_FOR_USER, Locale.ENGLISH));
 
 
     }
